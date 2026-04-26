@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Visionix AI - Smart Farming</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <header>
+    <h1>🌾 Visionix AI</h1>
+    <p>AI-Based Smart Resource Allocation System</p>
+  </header>
+
+  <div class="container">
+
+    <!-- Weather Section -->
+    <!-- Weather Section -->
+<div class="card">
+  <h2>🌦️ Weather Prediction</h2>
+  <input type="text" id="city" placeholder="Enter City">
+  <input type="date" id="selectDate">
+  <button onclick="getWeather()">Check Weather</button>
+  <p id="weatherResult"></p>
+</div>
+
+    <!-- Crop Detection -->
+    <div class="card">
+      <h2>📸 Crop Disease Detection</h2>
+      <input type="file" id="imageUpload">
+      <button onclick="detectDisease()">Analyze Crop</button>
+      <img id="preview" />
+      <p id="diseaseResult"></p>
+    </div>
+
+    <!-- Recommendation -->
+    <div class="card">
+      <h2>📋 Smart Recommendation</h2>
+      <p id="recommendation"></p>
+    </div>
+
+  </div>
+
+  <footer>
+    <p>© 2026 Visionix AI | Hackathon</p>
+  </footer>
+
+  <!-- AI Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@latest/dist/teachablemachine-image.min.js"></script>
+
+  <script src="script.js"></script>
+
+</body>
+</html>
