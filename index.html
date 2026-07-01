@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Visionix AI - Smart Farming</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header>
+    <div class="header-glow"></div>
+    <div class="header-left">
+      <span class="logo-icon">🌾</span>
+      <div>
+        <h1>Visionix AI</h1>
+        <p id="headerSub">AI-Based Smart Resource Allocation for Farmers</p>
+      </div>
+    </div>
+    <div class="header-right">
+      <div class="status-pills">
+        <span id="modelStatus" class="pill loading">⏳ AI Vision</span>
+        <span id="backendStatus" class="pill loading">⏳ Backend</span>
+      </div>
+      <div class="lang-buttons">
+        <button class="lang-btn active" onclick="setLang('english', this)">EN</button>
+        <button class="lang-btn" onclick="setLang('hindi', this)">हि</button>
+        <button class="lang-btn" onclick="setLang('bhojpuri', this)">भो</button>
+        <button class="lang-btn" onclick="setLang('marathi', this)">म</button>
+        <button class="lang-btn" onclick="setLang('telugu', this)">తె</button>
+        <button class="lang-btn" onclick="setLang('tamil', this)">த</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- TABS -->
+  <div class="tab-bar">
+    <button class="tab active" onclick="switchTab('weather', this)">🌦️ <span>Weather</span></button>
+    <button class="tab" onclick="switchTab('detect', this)">📸 <span>Detect & Chat</span></button>
+    <button class="tab" onclick="switchTab('mandi', this)">💰 <span>Mandi</span></button>
+    <button class="tab" onclick="switchTab('calendar', this)">🌱 <span>Crop Calendar</span></button>
+    <button class="tab" onclick="switchTab('dashboard', this)">📈 <span>Dashboard</span></button>
+    <button class="tab" onclick="switchTab('soil', this)">🎯 <span>Soil Health</span></button>
+    <button class="tab" onclick="switchTab('history', this)">📊 <span>History</span></button>
+  </div>
+
+  <div class="tab-content">
+
+    <!-- WEATHER TAB -->
+    <div class="tab-panel active" id="tab-weather">
+      <div class="panel-card">
+        <div class="panel-header">
+          <span class="panel-icon">🌦️</span>
+          <div>
+            <h2 id="weatherTitle">Weather Prediction</h2>
+            <p class="panel-sub" id="weatherSub">Get 5-day forecast for your city</p>
+          </div>
+        </div>
+        <div class="input-row">
+          <input type="text" id="city" placeholder="Enter your city name" class="input-field">
+          <button onclick="getWeather()" class="btn-primary">Check Weather</button>
+        </div>
+        <div id="weatherResult" class="result-box"></div>
+      </div>
+    </div>
+
+    <!-- DETECT & CHAT TAB -->
+    <div class="tab-panel" id="tab-detect">
+      <div class="detect-chat-grid">
+        <div class="panel-card">
+          <div class="panel-header">
+            <span class="panel-icon">📸</span>
+            <div>
+              <h2 id="detectTitle">Crop Disease Detection</h2>
+              <p class="panel-sub" id="detectSub">Upload photo — Groq Vision AI will analyze</p>
+            </div>
+          </div>
+
+          <!-- Camera + Upload Buttons -->
+          <div class="capture-row">
+            <button onclick="openCamera()" class="btn-camera">📷 Camera</button>
+            <button onclick="document.getElementById('imageUpload').click()" class="btn-upload">📁 Upload</button>
+          </div>
+          <input type="file" id="imageUpload" accept="image/*" style="display:none">
+
+          <!-- Camera Stream -->
+          <video id="cameraStream" autoplay style="display:none;width:100%;border-radius:12px;margin-top:10px"></video>
+          <button id="captureBtn" onclick="capturePhoto()" class="btn-primary" style="display:none;margin-top:8px">📸 Capture Photo</button>
+          <canvas id="canvas" style="display:none"></canvas>
+
+          <img id="preview" />
+          <button onclick="detectDisease()" class="btn-primary" style="margin-top:12px">🔍 <span id="analyzeBtn">Analyze Crop</span></button>
+          <div id="diseaseResult" class="result-box"></div>
+
+          <!-- WhatsApp Share -->
+          <button id="whatsappBtn" onclick="shareWhatsApp()" class="btn-whatsapp" style="display:none">
+            📱 Share on WhatsApp
+          </button>
+
+          <div id="recommendation" class="result-box" style="margin-top:10px"></div>
+        </div>
+
+        <!-- CHAT -->
+        <div class="panel-card chat-panel">
+          <div class="panel-header">
+            <span class="panel-icon">🤖</span>
+            <div>
+              <h2 id="chatTitle">AI Farmer Assistant</h2>
+              <p class="panel-sub" id="chatSub">Ask me anything about your crop!</p>
+            </div>
+          </div>
+          <div id="chatBox" class="chat-box">
+            <div class="chat-msg bot">
+              <span class="chat-avatar">🌾</span>
+              <div class="chat-bubble" id="welcomeMsg">Namaste! Upload a crop photo and Groq Vision AI will detect any disease instantly. Then ask me anything!</div>
+            </div>
+          </div>
+          <div class="chat-input-row">
+            <input type="text" id="chatInput" placeholder="Ask about your crop..." class="input-field">
+            <button onclick="startVoice()" class="btn-voice" id="voiceBtn">🎤</button>
+            <button onclick="sendChat()" class="btn-send">Send</button>
+          </div>
+          <div class="quick-questions">
+            <button class="quick-btn" onclick="quickAsk('treatment')">💊 Treatment?</button>
+            <button class="quick-btn" onclick="quickAsk('irrigation')">💧 Irrigation?</button>
+            <button class="quick-btn" onclick="quickAsk('fertilizer')">🌱 Fertilizer?</button>
+            <button class="quick-btn" onclick="quickAsk('prevention')">🛡️ Prevention?</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- MANDI TAB -->
+    <div class="tab-panel" id="tab-mandi">
+      <div class="panel-card">
+        <div class="panel-header">
+          <span class="panel-icon">💰</span>
+          <div>
+            <h2 id="mandiTitle">Mandi Price</h2>
+            <p class="panel-sub">Get real-time market prices + 7-day trend</p>
+          </div>
+        </div>
+        <div class="input-row">
+          <input type="text" id="cropName" placeholder="Crop name (e.g. Wheat)" class="input-field">
+          <input type="text" id="stateName" placeholder="State (e.g. Bihar)" class="input-field">
+          <button onclick="getMandiPrice()" class="btn-primary">Get Price</button>
+        </div>
+        <div id="mandiResult" class="result-box"></div>
+
+        <!-- Price Graph -->
+        <div id="graphContainer" style="display:none; margin-top:20px">
+          <h3 style="color:var(--accent3); font-family:var(--font-head); margin-bottom:12px">📊 Price Trend</h3>
+          <canvas id="priceChart"></canvas>
+        </div>
+
+        <div class="crop-chips">
+          <span class="chip-label">Popular:</span>
+          <button class="crop-chip" onclick="quickCrop('Wheat')">🌾 Wheat</button>
+          <button class="crop-chip" onclick="quickCrop('Rice')">🍚 Rice</button>
+          <button class="crop-chip" onclick="quickCrop('Tomato')">🍅 Tomato</button>
+          <button class="crop-chip" onclick="quickCrop('Potato')">🥔 Potato</button>
+          <button class="crop-chip" onclick="quickCrop('Onion')">🧅 Onion</button>
+          <button class="crop-chip" onclick="quickCrop('Maize')">🌽 Maize</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- CROP CALENDAR TAB -->
+    <div class="tab-panel" id="tab-calendar">
+      <div class="panel-card">
+        <div class="panel-header">
+          <span class="panel-icon">🌱</span>
+          <div>
+            <h2>Crop Calendar</h2>
+            <p class="panel-sub">Best crops to grow based on current season & region</p>
+          </div>
+        </div>
+        <div class="input-row">
+          <input type="text" id="calendarState" placeholder="Enter your state (e.g. Bihar)" class="input-field">
+          <select id="calendarMonth" class="input-field">
+            <option value="1">January</option>
+            <option value="2">February</option>
+            <option value="3">March</option>
+            <option value="4">April</option>
+            <option value="5">May</option>
+            <option value="6">June</option>
+            <option value="7" selected>July</option>
+            <option value="8">August</option>
+            <option value="9">September</option>
+            <option value="10">October</option>
+            <option value="11">November</option>
+            <option value="12">December</option>
+          </select>
+          <button onclick="getCropCalendar()" class="btn-primary">🌱 Get Calendar</button>
+        </div>
+        <div id="calendarResult" class="result-box"></div>
+      </div>
+    </div>
+
+    <!-- FARM DASHBOARD TAB -->
+    <div class="tab-panel" id="tab-dashboard">
+      <div class="panel-card">
+        <div class="panel-header">
+          <span class="panel-icon">📈</span>
+          <div>
+            <h2>Farm Dashboard</h2>
+            <p class="panel-sub">Your complete farm overview at a glance</p>
+          </div>
+        </div>
+
+        <div class="dashboard-grid">
+          <div class="dash-card">
+            <div class="dash-icon">🌡️</div>
+            <div class="dash-label">Temperature</div>
+            <div class="dash-value" id="dashTemp">-- °C</div>
+          </div>
+          <div class="dash-card">
+            <div class="dash-icon">💧</div>
+            <div class="dash-label">Humidity</div>
+            <div class="dash-value" id="dashHumidity">-- %</div>
+          </div>
+          <div class="dash-card">
+            <div class="dash-icon">🌧️</div>
+            <div class="dash-label">Rain Forecast</div>
+            <div class="dash-value" id="dashRain">--</div>
+          </div>
+          <div class="dash-card">
+            <div class="dash-icon">🦠</div>
+            <div class="dash-label">Last Detection</div>
+            <div class="dash-value" id="dashDisease">None</div>
+          </div>
+          <div class="dash-card">
+            <div class="dash-icon">📊</div>
+            <div class="dash-label">Total Scans</div>
+            <div class="dash-value" id="dashScans">0</div>
+          </div>
+          <div class="dash-card">
+            <div class="dash-icon">✅</div>
+            <div class="dash-label">Healthy Crops</div>
+            <div class="dash-value" id="dashHealthy">0</div>
+          </div>
+        </div>
+
+        <div style="margin-top:20px">
+          <h3 style="color:var(--accent3);font-family:var(--font-head);margin-bottom:12px">📋 Recent Activity</h3>
+          <div id="dashActivity" class="result-box">Run weather check and crop analysis to see your farm dashboard!</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SOIL HEALTH TAB -->
+    <div class="tab-panel" id="tab-soil">
+      <div class="panel-card">
+        <div class="panel-header">
+          <span class="panel-icon">🎯</span>
+          <div>
+            <h2>Soil Health Estimator</h2>
+            <p class="panel-sub">AI estimates your soil health based on weather & crop data</p>
+          </div>
+        </div>
+        <div class="input-row">
+          <input type="text" id="soilCity" placeholder="Your city" class="input-field">
+          <input type="text" id="soilCrop" placeholder="Current crop (e.g. Wheat)" class="input-field">
+          <select id="soilType" class="input-field">
+            <option value="alluvial">Alluvial Soil</option>
+            <option value="black">Black Soil</option>
+            <option value="red">Red Soil</option>
+            <option value="laterite">Laterite Soil</option>
+            <option value="desert">Desert Soil</option>
+            <option value="mountain">Mountain Soil</option>
+          </select>
+          <button onclick="getSoilHealth()" class="btn-primary">🎯 Analyze Soil</button>
+        </div>
+        <div id="soilResult" class="result-box"></div>
+      </div>
+    </div>
+
+    <!-- HISTORY TAB -->
+    <div class="tab-panel" id="tab-history">
+      <div class="panel-card">
+        <div class="panel-header">
+          <span class="panel-icon">📊</span>
+          <div>
+            <h2 id="historyTitle">Detection History</h2>
+            <p class="panel-sub">Your last 20 crop analyses</p>
+          </div>
+        </div>
+        <div id="historyList" class="history-list">
+          <p class="empty-history">No detections yet.</p>
+        </div>
+        <button onclick="clearHistory()" class="btn-secondary" style="margin-top:16px">🗑 Clear History</button>
+      </div>
+    </div>
+
+  </div>
+
+  <footer>
+    <p>© 2026 Visionix AI &nbsp;|&nbsp; <span id="footerText">Empowering Indian Farmers with AI</span></p>
+    <span class="credit">Created by Priyavart; | Powered by Groq AI</span>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@latest/dist/teachablemachine-image.min.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
